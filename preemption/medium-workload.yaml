@@ -1,0 +1,41 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: medium-workload
+spec:
+  replicas: 1
+  selector:
+    app: medium-workload
+  template:
+    metadata:
+      labels:
+        app: medium-workload
+    spec:
+      priorityClassName: medium-priority
+      affinity:
+        nodeAffinity: 
+          requiredDuringSchedulingIgnoredDuringExecution: 
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In 
+                values:
+                - ip-10-0-132-216
+      containers:
+      - image: openshift/hello-openshift
+        imagePullPolicy: Always
+        name: hello-openshift
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources:
+          requests:
+            cpu: "8"
+          limits:
+            cpu: "8"
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  triggers:
+  - type: ConfigChange

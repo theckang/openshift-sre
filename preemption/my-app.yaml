@@ -1,0 +1,66 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: my-app
+spec:
+  replicas: 3
+  selector:
+    app: hello-openshift
+  template:
+    metadata:
+      labels:
+        app: hello-openshift
+    spec:
+      affinity:
+        nodeAffinity: 
+          requiredDuringSchedulingIgnoredDuringExecution: 
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In 
+                values:
+                - ip-10-0-132-216
+      containers:
+      - image: openshift/hello-openshift
+        imagePullPolicy: Always
+        name: hello-openshift
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources:
+          requests:
+            cpu: "3"
+          limits:
+            cpu: "3"
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  triggers:
+  - type: ConfigChange
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: example
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: hello-openshift
+  type: ClusterIP
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: example
+spec:
+  port:
+    targetPort: 8080
+  to:
+    kind: Service
+    name: example
+    weight: 100
+  wildcardPolicy: None
