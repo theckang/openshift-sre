@@ -1,0 +1,18 @@
+apiVersion: autoscaling/v2beta2 
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hello-autoscale
+spec:
+  scaleTargetRef:
+    apiVersion: v1 
+    kind: DeploymentConfig 
+    name: hello-openshift
+  minReplicas: 10
+  maxReplicas: 30
+  metrics: 
+  - type: Resource
+    resource:
+      name: cpu 
+      target:
+        type: Utilization 
+        averageValue: 200m

@@ -1,29 +1,32 @@
 ## Use case: Scale down zero
 
-1. Create deployment of 10 replicas
+1. Create new project
+```
+oc new-project scaledownzero
+```
+
+2. Create deployment of 10 replicas
 ```
 oc apply -f hello-world.yaml
 ```
 
-2. Increase load on application
+3. Increase load on application
 
-3. Show need for autoscaling
+4. Show need for autoscaling
 
-4. Create HPA and modified deployment with spec.replicas removed
+5. Create HPA and modified deployment with spec.replicas removed
 ```
 oc apply -f hpa1.yaml
 ```
 
-5. Observe error (all pods are terminated)
-
-6. HPA should bring the pods back up with the load but we will see a spike in error requests
+6. Observe error (all pods are terminated).
 ```
 watch oc get pods
 ```
 
-Note: `deploymentConfig` without replicas sets the count to 0.  `deployment` without replicas sets the count to 1.
+7. Application SLO is breached until HPA brings the pod count back up to serve requests.
 
-7. Fix: Don't remove the spec.replicas field.  You don't need to modify it.
+8. Fix: Don't remove the spec.replicas field.  You don't need to modify it.  Note: `deploymentConfig` without replicas sets the count to 0.  `deployment` without replicas sets the count to 1.
 ```
 oc delete -f hpa1.yaml
 oc apply -f hello-world.yaml
