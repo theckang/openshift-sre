@@ -12,14 +12,14 @@ spec:
         app: hello-openshift
     spec:
       affinity:
-        nodeAffinity: 
-          requiredDuringSchedulingIgnoredDuringExecution: 
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
               - key: kubernetes.io/hostname
-                operator: In 
+                operator: In
                 values:
-                - ip-10-0-132-216
+                - <node-ip>
       containers:
       - image: openshift/hello-openshift
         imagePullPolicy: Always
