@@ -20,7 +20,7 @@ oc apply -f cronjob1.yaml
 
 5. Increase load on application.  Observe inability for application to scale and SLO is breached.
 
-6. Fix: Misconfigured cron job.  Spec is wrong and `activeDeadlineSeconds` is missing.
+6. Fix: Misconfigured cron job.  `concurrencyPolicy` is in the wrong place in the spec.  Also use `activeDeadlineSeconds` to protect jobs from running indefinitely.
 ```
 oc describe cronjob high-cpu-workload
 oc delete -f cronjob1.yaml
