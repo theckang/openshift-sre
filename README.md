@@ -1,4 +1,4 @@
-# Site Reliability Engineering
+# OpenShift Site Reliability Engineering
 
 The goal of this repo is to demonstrate aspects of Site Reliability Engineering using Kubernetes/OpenShift and Istio/OpenShift Service Mesh.
 
@@ -12,7 +12,9 @@ Follow the [instructions](https://docs.openshift.com/container-platform/4.5/serv
 
 After you install the service mesh control plane, create a new project:
 
-`oc create myproject`
+```bash
+oc create myproject
+```
 
 Add this project to the service mesh:
 
@@ -39,7 +41,7 @@ Follow the instructions [here](https://github.com/RedHatGov/service-mesh-worksho
 
 Set the gateway URL:
 
-```
+```bash
 GATEWAY_URL=$(oc get route istio-ingressgateway -n istio-system --template='http://{{.spec.host}}')
 echo $GATEWAY_URL
 ```
@@ -50,7 +52,7 @@ TODO: Deploy SLO dashboards
 
 Open Dashboards in Grafana:
 
-```
+```bash
 echo $(oc get route grafana -n istio-system --template='https://{{.spec.host}}/dashboards')
 ```
 
@@ -62,7 +64,9 @@ TODO: Explain each chart
 
 Send sample requests:
 
-`while true; do curl -s -o /dev/null $GATEWAY_URL; done`
+```bash
+while true; do curl -s -o /dev/null $GATEWAY_URL; done
+```
 
 ## Failure Scenarios
 
