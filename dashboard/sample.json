@@ -24,7 +24,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": null,
-      "description": "95% of all requests to the user interface will succeed",
+      "description": "95% of requests are successful and return within 1 second (measured in 1 min interval)",
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -61,8 +61,8 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(increase(istio_requests_total{destination_service_name=\"app-ui\", response_code=~\"2.*\"}[1m])) / sum(increase(istio_requests_total{destination_service_name=\"app-ui\"}[1m]))",
-          "legendFormat": "Percentage of successful requests to the user interface over 1 minute period",
+          "expr": "sum(increase(istio_request_duration_seconds_bucket{destination_service_name=\"app-ui\", response_code=~\"2.*\", le=\"1\"}[1m])) / sum(increase(istio_requests_total{destination_service_name=\"app-ui\"}[1m]))",
+          "legendFormat": "% of successful requests to the UI that returned wtihin 1 second (1 min interval)",
           "refId": "A"
         }
       ],
@@ -73,13 +73,13 @@
           "line": true,
           "op": "lt",
           "value": 0.95,
-          "yaxis": "left"
+          "yaxis": "right"
         }
       ],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Availability SLO",
+      "title": "SLO #1",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -99,7 +99,7 @@
           "label": null,
           "logBase": 1,
           "max": "1",
-          "min": null,
+          "min": "0",
           "show": true
         },
         {
@@ -122,11 +122,11 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": null,
-      "description": "95% of all requests to the user interface will return in less than 1 second",
+      "description": "90% of requests are successful and return within 500 milliseconds (measured in 1 min interval)",
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 12,
         "x": 12,
         "y": 0
@@ -157,8 +157,8 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(increase(istio_request_duration_seconds_bucket{destination_service_name=\"app-ui\", le=\"1\"}[1m])) / sum(increase(istio_requests_total{destination_service_name=\"app-ui\"}[1m]))",
-          "legendFormat": "Percentage of requests to the user interface that completed within 1 second",
+          "expr": "sum(increase(istio_request_duration_seconds_bucket{destination_service_name=\"app-ui\", response_code=~\"2.*\", le=\"0.5\"}[1m])) / sum(increase(istio_requests_total{destination_service_name=\"app-ui\"}[1m]))",
+          "legendFormat": "% of successful requests to the UI that returned wtihin 500ms (1 min interval)",
           "refId": "A"
         }
       ],
@@ -168,14 +168,14 @@
           "fill": true,
           "line": true,
           "op": "lt",
-          "value": 0.95,
-          "yaxis": "left"
+          "value": 0.9,
+          "yaxis": "right"
         }
       ],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Latency SLO",
+      "title": "SLO #2",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -195,7 +195,201 @@
           "label": "",
           "logBase": 1,
           "max": "1.0",
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
           "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "description": "SLO #1 has 5% failure threshold",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 9
+      },
+      "id": 6,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "1.0 - sum(increase(istio_request_duration_seconds_bucket{destination_service_name=\"app-ui\", response_code=~\"2.*\", le=\"1\"}[1m])) / sum(increase(istio_requests_total{destination_service_name=\"app-ui\"}[1m]))",
+          "legendFormat": "% of requests that breached SLO #1 (1 min interval)",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [
+        {
+          "colorMode": "critical",
+          "fill": true,
+          "line": true,
+          "op": "gt",
+          "value": 0.05,
+          "yaxis": "right"
+        }
+      ],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "SLO #1 Error Budget",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "percentunit",
+          "label": null,
+          "logBase": 1,
+          "max": "0.25",
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "description": "SLO #2 - 10% failure threshold",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 9
+      },
+      "id": 8,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "1.0 - sum(increase(istio_request_duration_seconds_bucket{destination_service_name=\"app-ui\", response_code=~\"2.*\", le=\"0.5\"}[1m])) / sum(increase(istio_requests_total{destination_service_name=\"app-ui\"}[1m]))",
+          "legendFormat": "% of requests that breached SLO #2 (1 min interval)",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [
+        {
+          "colorMode": "critical",
+          "fill": true,
+          "line": true,
+          "op": "gt",
+          "value": 0.1,
+          "yaxis": "right"
+        }
+      ],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "SLO #2 Error Budget",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "percentunit",
+          "label": "",
+          "logBase": 1,
+          "max": "0.25",
+          "min": "0",
           "show": true
         },
         {
@@ -240,5 +434,5 @@
   "timezone": "",
   "title": "Pinterest Board Dashboard",
   "uid": "nVCVu-dMz",
-  "version": 10
+  "version": 14
 }
