@@ -48,9 +48,13 @@ echo $GATEWAY_URL
 
 ## SLO Dashboards
 
-TODO: Deploy SLO dashboards
+Start by sending traffic to the app:
 
-Open Dashboards in Grafana:
+```bash
+while true; do curl -s -o /dev/null $GATEWAY_URL; done
+```
+
+Open Grafana dashboards in the browser:
 
 ```bash
 echo $(oc get route grafana -n istio-system --template='https://{{.spec.host}}/dashboards')
@@ -58,17 +62,51 @@ echo $(oc get route grafana -n istio-system --template='https://{{.spec.host}}/d
 
 Download the `dashboard/sample.json` file and import it to Grafana.
 
-Navigate to the imported dashboard and you should see various SLO charts.
+Navigate to the imported dashboard and you should see various SLO charts.  In the top right, switch the time range to `Last 5 minutes`. 
 
-TODO: Explain each chart
+![Dashboard](/dashboard/images/dashboard.png?raw=true)
 
-Send sample requests:
+The SLOs use two Service Level Indicators: availability (% of successful requests) and latency (# of seconds to process request).
 
-```bash
-while true; do curl -s -o /dev/null $GATEWAY_URL; done
-```
+SLO #1: 95% of requests are successful and return within 1 second (measured in 1 min interval)
+
+SLO #2: 90% of requests are successful and return within 500 milliseconds (measured in 1 min interval)
+
+The time interval is set to 1 minute for the purposes of demonstration.  In reality, this interval would be longer (e..g 30 days).
+
+The corresponding Error Budget charts are generated for each SLO.
 
 ## Failure Scenarios
 
-TODO: Exact failure scenarios
+### Scale Down Zero
 
+In this scenario, we are going to add autoscaling to the application.
+
+```bash
+oc apply -f scaledownzero/app-ui-autoscale.yaml
+```
+
+Navigate to Grafana.  Wait a minute and click the refresh icon in the top right.
+
+![Refresh Icon](/dashboard/images/refresh.png?raw=true)
+
+The SLO will be breached, and the error budget will be depleted.
+
+![Failure](/dashboard/images/failure.png?raw=true)
+
+What went wrong?  This is an exercise for you to find out :)
+
+Identify:
+* How to roll back this change to a previous state
+* What is the root cause of the failure?
+* How to fix the issue and add autoscaling successfully
+
+Note: When you fix the issue and deploy autosclaing, it can take awhile for the horizontal pod autoscaler to pick up CPU metrics.  (I've seen up to eight failures before the metrics are successfully retrieved).
+
+### Cron Job
+
+TODO
+
+### Preemption
+
+TODO
