@@ -158,43 +158,43 @@ Bonus:
 
 TODO: Test this scenario
 
-In this scenario, we are going to add a workload with a priority class.  We are going to make sure there is plenty of CPU resources before deploying this workload, so we avoid impacting the application.
+In this scenario, we are going to add a `DaemonSet` with a priority class.  We are going to make sure there is plenty of CPU before deploying this `DaemonSet`, so we avoid impacting the application.
 
 Make sure you are sending traffic to the app if you aren't already:
 ```bash
 while true; do curl -s -o /dev/null $GATEWAY_URL; done
 ```
 
-Select a node:
-```
-NODE_IP=<>
-```
-
-Create affinity for the application pod:
-```
-oc apply -f scenarios/priorityclass/app-ui-affinity.yaml
+Delete any limit ranges:
+```bash
+oc delete limitrange --all
 ```
 
-Observe CPU usage:
+Modify the daemon set CPU requests.  Use 75% of your node's capacity.  For example, the current YAML requests `12` cores on a `16` vCPU machine.
+```bash
+oc edit scenarios/priorityclass/medium-daemonset.yaml
 ```
-oc adm top node $NODE_IP
+
+Observe CPU usage.  There should be plenty of room to run the daemonset:
+```bash
+oc adm top node -l node-role.kubernetes.io/worker
 ```
 
 Create medium priority class:
-```
+```bash
 oc apply -f scenarios/priorityclass/medium-priority.yaml
 ```
 
-Create medium priority pod targeted at the same node:
-```
-oc apply -f scenarios/priorityclass/medium-workload.yaml
+Create daemon set using medium priority:
+```bash
+oc apply -f scenarios/priorityclass/medium-daemonset.yaml
 ```
 
-TODO: Show impact to application SLO
+Navigate to Grafana.  The SLO will be breached, and the error budget will be depleted.
 
 What went wrong?
 
 Identify:
 * How to roll back this change to a previous state
 * What is the root cause of the failure?
-* How to fix the issue and add the medium priority workload successfully
+* How to fix the issue and add the medium priority `DaemonSet` successfully
