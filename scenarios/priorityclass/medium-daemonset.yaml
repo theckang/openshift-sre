@@ -1,15 +1,15 @@
-apiVersion: apps.openshift.io/v1
-kind: DeploymentConfig
+apiVersion: apps/v1
+kind: DaemonSet
 metadata:
-  name: medium-workload
+  name: medium-daemonset
 spec:
-  replicas: 1
   selector:
-    app: medium-workload
+      matchLabels:
+        name: medium-daemonset
   template:
     metadata:
       labels:
-        app: medium-workload
+        name: medium-daemonset
     spec:
       priorityClassName: medium-priority
       affinity:
@@ -17,25 +17,22 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: kubernetes.io/hostname
+              - key: node-role.kubernetes.io/worker
                 operator: In
                 values:
-                - <node-ip>
+                - ''
       containers:
       - image: openshift/hello-openshift
         imagePullPolicy: Always
-        name: hello-openshift
+        name: registry
         ports:
-        - containerPort: 8080
+        - containerPort: 80
           protocol: TCP
         resources:
           requests:
-            cpu: "8"
+            cpu: "12"
           limits:
-            cpu: "8"
-      restartPolicy: Always
-      schedulerName: default-scheduler
-      securityContext: {}
-      terminationGracePeriodSeconds: 30
-  triggers:
-  - type: ConfigChange
+            cpu: "12"
+        terminationMessagePath: /dev/termination-log
+      serviceAccount: default
+      terminationGracePeriodSeconds: 10
