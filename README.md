@@ -156,9 +156,7 @@ Bonus:
 
 ### Priority
 
-TODO: Test this scenario
-
-In this scenario, we are going to add a `DaemonSet` with a priority class.  We are going to make sure there is plenty of CPU before deploying this `DaemonSet`, so we avoid impacting the application.
+In this scenario, we are going to add a `DaemonSet` with a priority class.  We are going to make sure there is plenty of CPU before deploying this `DaemonSet`.  Since the `DaemonSet` has medium priority and there is plenty of CPU resources available, we don't expect any impact to the application.
 
 Make sure you are sending traffic to the app if you aren't already:
 ```bash
