@@ -72,7 +72,7 @@ SLO #1: 95% of requests are successful and return within 1 second (measured in 1
 
 SLO #2: 90% of requests are successful and return within 500 milliseconds (measured in 1 min interval)
 
-The time interval is set to 1 minute for the purposes of demonstration.  In reality, this interval would be longer (e..g 30 days).
+The time interval is set to 1 minute for the purposes of demonstration.  In reality, this interval would be longer (e.g. 30 days).
 
 The corresponding Error Budget charts are generated for each SLO.
 
@@ -82,8 +82,15 @@ The corresponding Error Budget charts are generated for each SLO.
 
 In this scenario, we are going to add autoscaling to the application.
 
+Make sure you are sending traffic to the app if you aren't already:
 ```bash
-oc apply -f scaledownzero/app-ui-autoscale.yaml
+while true; do curl -s -o /dev/null $GATEWAY_URL; done
+```
+
+Add autoscaling:
+
+```bash
+oc apply -f scenarios/scaledownzero/app-ui-autoscale.yaml
 ```
 
 Navigate to Grafana.  Wait a minute and click the refresh icon in the top right.
@@ -101,12 +108,93 @@ Identify:
 * What is the root cause of the failure?
 * How to fix the issue and add autoscaling successfully
 
+Bonus:
+* Would this behavior change with a `Deployment` instead of `DeploymentConfig`?  How?
+
 Note: When you fix the issue and deploy autosclaing, it can take awhile for the horizontal pod autoscaler to pick up CPU metrics.  (I've seen up to eight failures before the metrics are successfully retrieved).
 
 ### Cron Job
 
-TODO
+In this scenario, we are going to add a CPU intensive `CronJob`.  We only want one job to run at any time to avoid overtaking the cluster's resources.
 
-### Preemption
+Make sure you are sending traffic to the app if you aren't already:
+```bash
+while true; do curl -s -o /dev/null $GATEWAY_URL; done
+```
 
-TODO
+Take a look at the resources available in your worker nodes:
+
+```bash
+oc adm top node -l node-role.kubernetes.io/worker
+```
+
+The CPU usage should be relatively low across your nodes.  If your usage is high, remove any other applications or projects you are running that aren't relevant to this exercise.
+
+Deploy the CPU intensive `CronJob`:
+
+```bash
+oc apply -f scenarios/cronjob/cronjob.yaml
+```
+
+Wait 5 minutes.  The `CronJob` will overtake the worker nodes.
+
+```bash
+oc adm top node -l node-role.kubernetes.io/worker
+```
+
+TODO: Scale app and show impact of `CronJob` on SLO.
+
+What went wrong?
+
+Identify:
+* How to roll back this change to a previous state
+* What is the root cause of the failure?
+* How to fix the issue and run the `CronJob` successfully
+
+Bonus:
+* How do we prevent the `CronJob` from running indefinitely?  Why should we avoid this?
+
+### Priority
+
+TODO: Test this scenario
+
+In this scenario, we are going to add a workload with a priority class.  We are going to make sure there is plenty of CPU resources before deploying this workload, so we avoid impacting the application.
+
+Make sure you are sending traffic to the app if you aren't already:
+```bash
+while true; do curl -s -o /dev/null $GATEWAY_URL; done
+```
+
+Select a node:
+```
+NODE_IP=<>
+```
+
+Create affinity for the application pod:
+```
+oc apply -f scenarios/priorityclass/app-ui-affinity.yaml
+```
+
+Observe CPU usage:
+```
+oc adm top node $NODE_IP
+```
+
+Create medium priority class:
+```
+oc apply -f scenarios/priorityclass/medium-priority.yaml
+```
+
+Create medium priority pod targeted at the same node:
+```
+oc apply -f scenarios/priorityclass/medium-workload.yaml
+```
+
+TODO: Show impact to application SLO
+
+What went wrong?
+
+Identify:
+* How to roll back this change to a previous state
+* What is the root cause of the failure?
+* How to fix the issue and add the medium priority workload successfully

@@ -22,5 +22,5 @@ spec:
               limits:
                 cpu: 4
               requests:
-                cpu: 4
+                cpu: 2
           restartPolicy: Never
