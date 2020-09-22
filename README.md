@@ -105,7 +105,7 @@ What went wrong?  This is an exercise for you to find out :)
 
 Identify:
 * How to roll back this change to a previous state
-* What is the root cause of the failure?
+* What factors contributed to the failure?
 * How to fix the issue and add autoscaling successfully
 
 Bonus:
@@ -148,7 +148,7 @@ What went wrong?
 
 Identify:
 * How to roll back this change to a previous state
-* What is the root cause of the failure?
+* What factors contributed to the failure?
 * How to fix the issue and run the `CronJob` successfully
 
 Bonus:
@@ -194,5 +194,5 @@ What went wrong?
 
 Identify:
 * How to roll back this change to a previous state
-* What is the root cause of the failure?
+* What factors contributed to the failure?
 * How to fix the issue and add the medium priority `DaemonSet` successfully
