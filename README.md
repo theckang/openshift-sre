@@ -102,6 +102,13 @@ The SLO will be breached, and the error budget will be depleted.
 
 ![Failure](/dashboard/images/failure.png?raw=true)
 
+Open the application UI in the browser
+```bash
+echo $GATEWAY_URL
+```
+
+It will return `no healthy upstream`.  Not good.  Our application is inaccessible, and our users will be very unhappy.
+
 What went wrong?  This is an exercise for you to find out :)
 
 Identify:
