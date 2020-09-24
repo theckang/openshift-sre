@@ -28,6 +28,7 @@ metadata:
 spec:
   members:
     - myproject
+EOF
 ```
 
 Download the repo to install the sample microservices application.  The original source for this application is [here](https://github.com/dudash/openshift-microservices).
@@ -37,7 +38,7 @@ git clone https://github.com/RedHatGov/service-mesh-workshop-code.git
 cd service-mesh-workshop-code/deployment/workshop
 ```
 
-Follow the instructions [here](https://github.com/RedHatGov/service-mesh-workshop-dashboard/blob/main/workshop/content/lab1.3_deploymsa.md) to deploy the sample application.  Use `istio-ingressgateway` for the `INGRESS_GATEWAY_NAME`.
+Follow the instructions [here](https://github.com/RedHatGov/service-mesh-workshop-dashboard/blob/main/workshop/content/lab1.3_deploymsa.md) to deploy the sample application.  Use `ingressgateway` for the `INGRESS_GATEWAY_NAME`.
 
 Set the gateway URL:
 
