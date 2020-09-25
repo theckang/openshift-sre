@@ -204,3 +204,28 @@ Identify:
 * How to roll back this change to a previous state
 * What factors contributed to the failure?
 * How to fix the issue and add the medium priority `DaemonSet` successfully
+
+### Health Checks
+
+In this scenario, we are going to add [health checks](https://docs.openshift.com/container-platform/4.5/applications/application-health.html) to our application.  The `ReadinessProbe` will ensure the application is ready before it receives traffic, and the `LivenessProbe` will restart the application pod if it determines the application is unhealthy.
+
+For the purpose of this exercise, use my forked repo to deploy the application.
+
+```bash
+oc patch bc app-ui -p '{"spec":{"source":{"git":{"uri": "https://github.com/theckang/service-mesh-workshop-code.git"}}}}'
+oc start-build app-ui
+```
+
+Add health checks to the application:
+```bash
+oc apply -f scenarios/healthchecks/probes.yaml
+```
+
+Navigate to Grafana.  The SLO will be breached, and the error budget will be depleted.
+
+What went wrong?
+
+Identify:
+* How to roll back this change to a previous state
+* What factors contributed to the failure?
+* How to fix the issue and add health checks successfully
