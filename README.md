@@ -162,7 +162,7 @@ Identify:
 Bonus:
 * How do we prevent the `CronJob` from running indefinitely?  Why should we avoid this?
 
-### Priority
+### Priority Class
 
 In this scenario, we are going to add a `DaemonSet` with a priority class.  We are going to make sure there is plenty of CPU before deploying this `DaemonSet`.  Since the `DaemonSet` has medium priority and there is plenty of CPU resources available, we don't expect any impact to the application.
 
@@ -221,7 +221,14 @@ Add health checks to the application:
 oc apply -f scenarios/healthchecks/probes.yaml
 ```
 
-Navigate to Grafana.  The SLO will be breached, and the error budget will be depleted.
+TODO: Scale app and show impact of this change on SLO.
+
+If you run:
+```bash
+oc get pods -l app=app-ui
+```
+
+The newest version of the application fails to deploy with probes added.
 
 What went wrong?
 
