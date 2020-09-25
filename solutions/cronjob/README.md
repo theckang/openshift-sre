@@ -1,6 +1,6 @@
 ## Cron Job
 
-The cron job is configured.  `concurrencyPolicy` is in the wrong place in the spec.  
+The cron job is misconfigured.  `concurrencyPolicy` is in the wrong place in the spec.  
 
 If you look at the `CronJob` closely:
 ```bash
