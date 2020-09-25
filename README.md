@@ -28,6 +28,7 @@ metadata:
 spec:
   members:
     - myproject
+EOF
 ```
 
 Download the repo to install the sample microservices application.  The original source for this application is [here](https://github.com/dudash/openshift-microservices).
@@ -37,7 +38,7 @@ git clone https://github.com/RedHatGov/service-mesh-workshop-code.git
 cd service-mesh-workshop-code/deployment/workshop
 ```
 
-Follow the instructions [here](https://github.com/RedHatGov/service-mesh-workshop-dashboard/blob/main/workshop/content/lab1.3_deploymsa.md) to deploy the sample application.  Use `istio-ingressgateway` for the `INGRESS_GATEWAY_NAME`.
+Follow the instructions [here](https://github.com/RedHatGov/service-mesh-workshop-dashboard/blob/main/workshop/content/lab1.3_deploymsa.md) to deploy the sample application.  Use `ingressgateway` for the `INGRESS_GATEWAY_NAME`.
 
 Set the gateway URL:
 
@@ -101,11 +102,18 @@ The SLO will be breached, and the error budget will be depleted.
 
 ![Failure](/dashboard/images/failure.png?raw=true)
 
+Open the application UI in the browser
+```bash
+echo $GATEWAY_URL
+```
+
+It will return `no healthy upstream`.  Not good.  Our application is inaccessible, and our users will be very unhappy.
+
 What went wrong?  This is an exercise for you to find out :)
 
 Identify:
 * How to roll back this change to a previous state
-* What is the root cause of the failure?
+* What factors contributed to the failure?
 * How to fix the issue and add autoscaling successfully
 
 Bonus:
@@ -148,7 +156,7 @@ What went wrong?
 
 Identify:
 * How to roll back this change to a previous state
-* What is the root cause of the failure?
+* What factors contributed to the failure?
 * How to fix the issue and run the `CronJob` successfully
 
 Bonus:
@@ -194,5 +202,30 @@ What went wrong?
 
 Identify:
 * How to roll back this change to a previous state
-* What is the root cause of the failure?
+* What factors contributed to the failure?
 * How to fix the issue and add the medium priority `DaemonSet` successfully
+
+### Health Checks
+
+In this scenario, we are going to add [health checks](https://docs.openshift.com/container-platform/4.5/applications/application-health.html) to our application.  The `ReadinessProbe` will ensure the application is ready before it receives traffic, and the `LivenessProbe` will restart the application pod if it determines the application is unhealthy.
+
+For the purpose of this exercise, use my forked repo to deploy the application.
+
+```bash
+oc patch bc app-ui -p '{"spec":{"source":{"git":{"uri": "https://github.com/theckang/service-mesh-workshop-code.git"}}}}'
+oc start-build app-ui
+```
+
+Add health checks to the application:
+```bash
+oc apply -f scenarios/healthchecks/probes.yaml
+```
+
+Navigate to Grafana.  The SLO will be breached, and the error budget will be depleted.
+
+What went wrong?
+
+Identify:
+* How to roll back this change to a previous state
+* What factors contributed to the failure?
+* How to fix the issue and add health checks successfully
