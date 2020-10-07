@@ -1,6 +1,6 @@
 # OpenShift Site Reliability Engineering
 
-The goal of this repo is to demonstrate aspects of Site Reliability Engineering using Kubernetes/OpenShift and Istio/OpenShift Service Mesh.
+The goal of this repo is to demonstrate aspects of Site Reliability Engineering using OpenShift and OpenShift Service Mesh.
 
 ## Prequisites
 
