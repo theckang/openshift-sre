@@ -61,8 +61,8 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(increase(istio_request_duration_seconds_bucket{destination_service_name=\"app-ui\", response_code=~\"2.*\", le=\"1\"}[1m])) / sum(increase(istio_requests_total{destination_service_name=\"app-ui\"}[1m]))",
-          "legendFormat": "% of successful requests to the UI that returned wtihin 1 second (1 min interval)",
+          "expr": "sum(increase(istio_request_duration_seconds_bucket{destination_service_name=\"app-ui\", response_code!~\"5.*\", le=\"1\"}[1m])) / sum(increase(istio_requests_total{destination_service_name=\"app-ui\"}[1m]))",
+          "legendFormat": "% of successful requests to the UI that returned within 1 second (1 min interval)",
           "refId": "A"
         }
       ],
@@ -157,8 +157,8 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(increase(istio_request_duration_seconds_bucket{destination_service_name=\"app-ui\", response_code=~\"2.*\", le=\"0.5\"}[1m])) / sum(increase(istio_requests_total{destination_service_name=\"app-ui\"}[1m]))",
-          "legendFormat": "% of successful requests to the UI that returned wtihin 500ms (1 min interval)",
+          "expr": "sum(increase(istio_request_duration_seconds_bucket{destination_service_name=\"app-ui\", response_code!~\"5.*\", le=\"0.5\"}[1m])) / sum(increase(istio_requests_total{destination_service_name=\"app-ui\"}[1m]))",
+          "legendFormat": "% of successful requests to the UI that returned within 500ms (1 min interval)",
           "refId": "A"
         }
       ],
@@ -255,7 +255,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "1.0 - sum(increase(istio_request_duration_seconds_bucket{destination_service_name=\"app-ui\", response_code=~\"2.*\", le=\"1\"}[1m])) / sum(increase(istio_requests_total{destination_service_name=\"app-ui\"}[1m]))",
+          "expr": "1.0 - sum(increase(istio_request_duration_seconds_bucket{destination_service_name=\"app-ui\", response_code!~\"5.*\", le=\"1\"}[1m])) / sum(increase(istio_requests_total{destination_service_name=\"app-ui\"}[1m]))",
           "legendFormat": "% of requests that breached SLO #1 (1 min interval)",
           "refId": "A"
         }
@@ -351,7 +351,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "1.0 - sum(increase(istio_request_duration_seconds_bucket{destination_service_name=\"app-ui\", response_code=~\"2.*\", le=\"0.5\"}[1m])) / sum(increase(istio_requests_total{destination_service_name=\"app-ui\"}[1m]))",
+          "expr": "1.0 - sum(increase(istio_request_duration_seconds_bucket{destination_service_name=\"app-ui\", response_code!~\"5.*\", le=\"0.5\"}[1m])) / sum(increase(istio_requests_total{destination_service_name=\"app-ui\"}[1m]))",
           "legendFormat": "% of requests that breached SLO #2 (1 min interval)",
           "refId": "A"
         }
@@ -432,7 +432,7 @@
     ]
   },
   "timezone": "",
-  "title": "Pinterest Board Dashboard",
+  "title": "Paste Board Dashboard",
   "uid": "nVCVu-dMz",
   "version": 14
 }
