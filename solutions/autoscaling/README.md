@@ -1,4 +1,4 @@
-## Scale Down Zero
+## Autoscaling
 
 Don't remove the spec.replicas field.  You don't need to modify it.  `DeploymentConfig` without `spec.replicas` changes the replica to 0, and the HPA will not scale the application.  
 
