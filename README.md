@@ -79,7 +79,7 @@ The corresponding Error Budget charts are generated for each SLO.
 
 ## Failure Scenarios
 
-### Scale Down Zero
+### Autoscaling
 
 In this scenario, we are going to add autoscaling to the application.
 
@@ -91,7 +91,7 @@ while true; do curl -s -o /dev/null $GATEWAY_URL; done
 Add autoscaling:
 
 ```bash
-oc apply -f scenarios/scaledownzero/app-ui-autoscale.yaml
+oc apply -f scenarios/autoscaling/app-ui-autoscale.yaml
 ```
 
 Navigate to Grafana.  Wait a minute and click the refresh icon in the top right.
