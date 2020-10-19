@@ -31,14 +31,21 @@ spec:
 EOF
 ```
 
-Download the repo to install the sample microservices application.  The original source for this application is [here](https://github.com/dudash/openshift-microservices).
+Download the SRE workshop repo to install the sample microservices application:
 
-```
-git clone https://github.com/RedHatGov/service-mesh-workshop-code.git
-cd service-mesh-workshop-code/deployment/workshop
+```bash
+git clone https://github.com/RedHatGov/sre-workshop-code
 ```
 
-Follow the instructions [here](https://github.com/RedHatGov/service-mesh-workshop-dashboard/blob/main/workshop/content/lab1.3_deploymsa.md) to deploy the sample application.  Use `ingressgateway` for the `INGRESS_GATEWAY_NAME`.
+Note: The original source for this application is [here](https://github.com/dudash/openshift-microservices).
+
+Deploy the microservices and gateway:
+
+```bash
+oc new-app -f ./setup/microservices-app-ui.yaml -e FAKE_USER=true
+oc new-app -f ./setup/microservices-boards.yaml
+oc create -f ./setup/gateway.yaml
+```
 
 Set the gateway URL:
 
@@ -150,7 +157,15 @@ Wait 5 minutes.  The `CronJob` will overtake the worker nodes.
 oc adm top node -l node-role.kubernetes.io/worker
 ```
 
-TODO: Scale app and show impact of `CronJob` on SLO.
+Stress the application:
+
+```bash
+siege -c 100 $GATEWAY_URL/stress
+```
+
+The SLO will be breached, and the error budget will be depleted.
+
+![SLO Failure](/dashboard/images/slo_failure.png?raw=true)
 
 What went wrong?
 
@@ -221,7 +236,15 @@ Add health checks to the application:
 oc apply -f scenarios/healthchecks/probes.yaml
 ```
 
-TODO: Scale app and show impact of this change on SLO.
+Stress the application:
+
+```bash
+siege -c 100 $GATEWAY_URL/stress
+```
+
+The SLO will be breached, and the error budget will be depleted.
+
+![SLO Failure](/dashboard/images/slo_failure.png?raw=true)
 
 If you run:
 ```bash
