@@ -160,7 +160,7 @@ oc adm top node -l node-role.kubernetes.io/worker
 Stress the application:
 
 ```bash
-siege -c 100 $GATEWAY_URL/stress
+siege -t 1H -c 6 "$GATEWAY_URL/stress"
 ```
 
 The SLO will be breached, and the error budget will be depleted.
@@ -239,7 +239,7 @@ oc apply -f scenarios/healthchecks/probes.yaml
 Stress the application:
 
 ```bash
-siege -c 100 $GATEWAY_URL/stress
+siege -t 1H -c 6 "GATEWAY_URL/stress"
 ```
 
 The SLO will be breached, and the error budget will be depleted.
